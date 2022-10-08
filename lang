@@ -1,0 +1,46 @@
+#!/bin/sh
+
+INPUT='./input.txt'
+OUTPUT='./out.txt'
+
+get_definition() {
+
+    while read word
+    do
+        dict -d wn $word | awk '(NR>4)' >> $OUTPUT
+    done < $INPUT
+}
+
+get_german() {
+
+    dict -d fd-deu-eng $2 | awk '(NR>4)'
+}
+
+get_elements() {
+
+    dict -d elements $2 | awk '(NR>4)'
+}
+
+get_thesaurus() {
+
+    while read word
+    do
+        dict -d moby-thesaurus $word | awk '(NR>4)' >> $OUTPUT
+    done < $INPUT
+}
+
+if [ "$1" = "-d" ]; then
+    get_definition
+
+elif [ "$1" = '-t' ]; then
+    get_thesaurus
+
+elif [ "$1" = '-g' ]; then
+    get_german $1 $2
+
+elif [ "$1" = '-e' ]; then
+    get_elements $1 $2
+
+else
+    echo "Usage: $0 [-d|-t|-g|-e element|word]"
+fi
