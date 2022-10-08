@@ -1,13 +1,21 @@
 # Usage:
-There are currently four options to use:
-- English-English thesaurus: `-t`
-- English-English definition: `-d`
-- German-English translation: `-g`
-- Chemical elements: `-e`
 
-First two options should be run on an `input.txt` file, but other options can be run directly from the cli:
+> [Scripts] [DICT] [MOD] [WORD|FILE]
+
+Dictionaries:
+- `-g`: German-English dictionary
+- `-d`: English dictionary
+- `-t`: English thesaurus
+- `-e`: Look up definition of a chemical element
+
+Modes:
+- `-s`: Single object
+- `-f`: File with words
+
+## Examples:
 ```bash
-lang -g Achtung
-lang -e Gold
+lang -g Warum
+lang -d Hello
+lang -d -f Words.txt
 ```
-Add words to the `input.txt` file, this script will read them line by line and then searches them the selected database and output the translations in the `out.txt` file.
+
