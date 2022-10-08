@@ -1,46 +1,47 @@
 #!/bin/sh
 
-INPUT='./input.txt'
-OUTPUT='./out.txt'
+main() {
+    if [ "$1" = "-g" ] && [ "$2" = "-w" ]; then
+        dict -d fd-deu-eng $3 | awk '(NR>4)'
 
-get_definition() {
+    elif [ "$1" = "-g" ] && [ "$2" = "-f" ]; then
+        while read word
+        do
+            dict -d fd-deu-eng $word | awk '(NR>4)' >> $3_out.txt
+        done < $3
 
-    while read word
-    do
-        dict -d wn $word | awk '(NR>4)' >> $OUTPUT
-    done < $INPUT
+    elif [ "$1" = "-d" ] && [ "$2" = "-w" ]; then
+        dict -d wn $3 | awk '(NR>4)'
+
+    elif [ "$1" = "-d" ] && [ "$2" = "-f" ]; then
+        while read word
+        do
+            dict -d wn $word | awk '(NR>4)' >> $3_out.txt
+        done < $3
+
+    elif [ "$1" = "-t" ] && [ "$2" = "-w" ]; then
+        dict -d moby-thesaurus $3 | awk '(NR>4)'
+
+    elif [ "$1" = "-t" ] && [ "$2" = "-f" ]; then
+        while read word
+        do
+            dict -d moby-thesaurus $word | awk '(NR>4)' >> $3_out.txt
+        done < $3
+
+    elif [ "$1" = "-e" ]; then
+        dict -d elements $2 | awk '(NR>4)'
+
+    elif [ "$1" = "-h" ]; then
+        echo "Usage: $0 [-g|-d|-t] [-w|-f] [word|file]"
+        echo "  -g: German-English dictionary"
+        echo "  -d: English dictionary"
+        echo "  -t: English thesaurus"
+        echo "  -e: Look up the definition of a chemical element"
+        echo "  -w: single word"
+        echo "  -f: file with words"
+        echo "  word: word to look up"
+        echo "  file: file with words to look up"
+    fi
 }
 
-get_german() {
-
-    dict -d fd-deu-eng $2 | awk '(NR>4)'
-}
-
-get_elements() {
-
-    dict -d elements $2 | awk '(NR>4)'
-}
-
-get_thesaurus() {
-
-    while read word
-    do
-        dict -d moby-thesaurus $word | awk '(NR>4)' >> $OUTPUT
-    done < $INPUT
-}
-
-if [ "$1" = "-d" ]; then
-    get_definition
-
-elif [ "$1" = '-t' ]; then
-    get_thesaurus
-
-elif [ "$1" = '-g' ]; then
-    get_german $1 $2
-
-elif [ "$1" = '-e' ]; then
-    get_elements $1 $2
-
-else
-    echo "Usage: $0 [-d|-t|-g|-e element|word]"
-fi
+main "$@"
